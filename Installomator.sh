@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2025-12-23"
+VERSIONDATE="2026-03-06"
 
 # MARK: Functions
 
@@ -6225,8 +6225,7 @@ jumpdesktop)
         | grep -oE '[0-9]{5}' \
         | sed 's/\([0-9]\)\([0-9]\)\([0-9]\{2\}\)/\1.\2.\3/')
     expectedTeamID="2HCKV38EEC"
-    ;;
-jupyterlab)
+    ;;jupyterlab)
     name="JupyterLab"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then

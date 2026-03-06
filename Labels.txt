@@ -492,7 +492,6 @@ joplin
 jre8
 jumpcloudpasswordmanager
 jumpdesktop
-jupyterlab
 kap
 karabinerelements
 kdrive
