@@ -6225,7 +6225,8 @@ jumpdesktop)
         | grep -oE '[0-9]{5}' \
         | sed 's/\([0-9]\)\([0-9]\)\([0-9]\{2\}\)/\1.\2.\3/')
     expectedTeamID="2HCKV38EEC"
-    ;;jupyterlab)
+    ;;
+jupyterlab)
     name="JupyterLab"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
