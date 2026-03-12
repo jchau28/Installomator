@@ -349,7 +349,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.9beta"
-VERSIONDATE="2026-03-06"
+VERSIONDATE="2026-03-12"
 
 # MARK: Functions
 
@@ -5373,6 +5373,13 @@ grandperspective)
     appNewVersion=$(curl -fs https://sourceforge.net/projects/grandperspectiv/files/grandperspective/ | grep -B 2 'Download Latest Version' | grep -oE '\/(\d|\.)+\/' | sed 's/\///g')
     expectedTeamID="3Z75QZGN66"
     ;;
+granola)
+    name="Granola"
+    type="dmg"
+    downloadURL="https://api.granola.ai/v1/download-latest"
+    appNewVersion=$(curl -fsIL "https://api.granola.ai/v1/download-latest" | grep -i "^location" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+    expectedTeamID="QZ7DHHLN25"
+    ;;
 graphicconverter10)
     name="GraphicConverter 10"
     type="zip"
@@ -6225,8 +6232,7 @@ jumpdesktop)
         | grep -oE '[0-9]{5}' \
         | sed 's/\([0-9]\)\([0-9]\)\([0-9]\{2\}\)/\1.\2.\3/')
     expectedTeamID="2HCKV38EEC"
-    ;;
-jupyterlab)
+    ;;jupyterlab)
     name="JupyterLab"
     type="dmg"
     if [[ $(arch) == arm64 ]]; then
@@ -10717,15 +10723,13 @@ toonboomstoryboardpro2025)
     expectedTeamID="U5LPYJSPQ3"
     ;;
 
-topazgigapixel|\
-topazgigapixelai)
-    # credit: Tully Jagoe
-    name="Topaz Gigapixel AI"
+topazgigapixel|topazgigapixelai)
+    name="Topaz Gigapixel"
     type="pkg"
-    appNewVersion=$(curl -fs https://www.topazlabs.com/downloads | grep  -o 'gigaVersion = "v.*"' | grep -o ' "v.*"' | sed -E 's/[v|"| ]//g')
+    appNewVersion=$(curl -fsIL "https://topazlabs.com/d/gigapixelstudio/latest/mac/full" | grep -i "location:" | tail -1 | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
     versionKey="CFBundleShortVersionString"
-    downloadURL="https://topazlabs.com/d/gigapixel/latest/mac/full"
-    archiveName="TopazGigapixelAI-${appNewVersion}.pkg"
+    downloadURL="https://topazlabs.com/d/gigapixelstudio/latest/mac/full"
+    archiveName="TopazGigapixel-${appNewVersion}.pkg"
     expectedTeamID="3G3JE37ZHF"
     ;;
 topazphoto|\
