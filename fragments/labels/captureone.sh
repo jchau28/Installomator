@@ -1,4 +1,5 @@
-captureone|captureonepro)
+captureone|\
+captureonepro)
     name="Capture One"
     type="dmg"
     appName="Capture One.app"

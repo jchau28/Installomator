@@ -1,4 +1,5 @@
-synergyeditor|synergyeditorbasketball)
+synergyeditor|\
+synergyeditorbasketball)
     name="Synergy Editor"
     type="dmg"
     if [[ "$(arch)" == "arm64" ]]; then
