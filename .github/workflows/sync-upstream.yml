@@ -1,0 +1,73 @@
+name: Sync labels from upstream Installomator
+
+on:
+  schedule:
+    # Every Monday at 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch upstream
+        run: |
+          git remote add upstream https://github.com/Installomator/Installomator.git
+          git remote set-url --push upstream DISABLED
+          git fetch upstream main
+
+      - name: Merge upstream into main
+        id: merge
+        run: |
+          # -X theirs: on any filename collision (e.g. a custom label that upstream
+          # later added independently), prefer upstream's community-maintained version.
+          if git merge upstream/main --no-edit -X theirs; then
+            echo "merged=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Merge could not complete automatically even with -X theirs (likely a" >&2
+            echo "structural conflict, e.g. a deleted/renamed file). Aborting." >&2
+            git merge --abort
+            echo "merged=false" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+      - name: Rebuild Installomator.sh
+        run: |
+          chmod +x utils/assemble.sh
+          ./utils/assemble.sh -s
+
+      - name: Verify no duplicate labels
+        run: |
+          dupes=$(grep -E '^[a-z0-9_-]*(\)|\|\\)$' Installomator.sh | tr -d ')|\' | grep -v -E '^(broken.*|longversion|version|valuesfromarguments)$' | sort | uniq -d)
+          if [[ -n "$dupes" ]]; then
+            echo "Duplicate labels found after merge - aborting without pushing:"
+            echo "$dupes"
+            exit 1
+          fi
+
+      - name: Verify script syntax
+        run: zsh -n Installomator.sh
+
+      - name: Commit rebuilt script and push
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Auto-sync labels from upstream Installomator"
+            git push origin main
+          fi
